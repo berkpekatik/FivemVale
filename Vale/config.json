@@ -1,0 +1,20 @@
+{
+  "ValePrice": 5000,
+  "FastValePrice": 5000,
+  "MenuToggleKey": 166,
+  "Locales": {
+    "MenuTitle": "Vale Hizmeti",
+    "MenuSubTitle": "Sana özel hizmet için hazýrýz",
+    "NoCarGarage": "Garajda aracýnýz bulunmamaktadýr.",
+    "StoredTextNotReady": /*PLATENUMBER*/ "Plakalý Aracýnýz Çekilmiþler Garajýnda!",
+    "StoredTextReady": /*PLATENUMBER*/ "Plakalý Aracýnýz Garajda Hazýr!",
+    "WhileTransferFailing": "Konum bilgisi dogrulanamadi.",
+    "ComplateText": "Aracýnýz Teslim Edildi.",
+    "ValeAldreadyUsingError": "Aktif bir Vale hizmetin bulunmakta.",
+    "ValeCannotUsingThisPos": "Malasef bulundugunuz bölgeye araç teslimat servisi yok.",
+    "ValeOnTheWay": "Aracýnýz Yolda!",
+    "ValePaidedText": "Vale Ücreti Alýndý!",
+    "FastValeCheckBoxName": "Hýzlý Vale",
+    "FastValeCheckBoxDescName": "Bu Seçenek Araçlarý size daha hýzlý ulaþtýrýr."
+  }
+}
