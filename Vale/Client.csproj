@@ -53,8 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
+    <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ConfigModel.cs" />
+    <Compile Include="Models\ConfigModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.json" />

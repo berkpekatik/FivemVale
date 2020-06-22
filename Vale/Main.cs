@@ -7,6 +7,9 @@ using MenuAPI;
 using static MenuAPI.MenuItem;
 using Newtonsoft.Json;
 using static MenuAPI.MenuCheckboxItem;
+using System.Collections.Generic;
+using Client.Models;
+using System.Linq;
 
 namespace Client
 {
@@ -30,7 +33,6 @@ namespace Client
         {
             Tick += OnTick;
             Tick += OnNoDelayTick;
-            
             var data = LoadResourceFile(GetCurrentResourceName(), "config.json");
             try
             {
@@ -50,17 +52,18 @@ namespace Client
 
             menu = new Menu(config.Locales.MenuTitle, config.Locales.MenuSubTitle);
 
-            menu.OnItemSelect += (_menu, _item, _index) =>
+            menu.OnCheckboxChange += (_menu, _item, _index, _checked) =>
             {
-                if (box.Checked)
+                if (_item == box)
                 {
-                    price += config.FastValePrice;
-                    FastVale(_item.ItemData);
-                }
-                else
-                {
-                    price = config.FastValePrice;
-                    Vale(_item.ItemData);
+                    if (_checked)
+                    {
+                        _item.Text = $"{config.Locales.FastValeCheckBoxName} +{config.FastValePrice} $";
+                    }
+                    else
+                    {
+                        _item.Text = config.Locales.FastValeCheckBoxName;
+                    }
                 }
             };
 
@@ -70,10 +73,9 @@ namespace Client
                 ESX.TriggerServerCallback("esx_advancedgarage:getOwnedCars", new Action<dynamic>(ownedCars =>
                 {
                     var count = ownedCars.Count;
-                    Debug.WriteLine(count.ToString());
                     if (count == 0)
                     {
-                        ESX.ShowNotification(config.Locales.NoCarGarage);
+                        ShowNoti(config.Locales.NoCarGarage);
                         return;
                     }
 
@@ -111,29 +113,36 @@ namespace Client
                     }
 
                 }));
-
                 if (config.FastValeService)
                 {
                     box = new MenuCheckboxItem(config.Locales.FastValeCheckBoxName, config.Locales.FastValeCheckBoxDescName, false);
                     box.Style = CheckboxStyle.Tick;
                     menu.AddMenuItem(box);
                 }
-
-            };
-
-            menu.OnCheckboxChange += (_menu, _item, _index, _checked) =>
-            {
-                if (_item == box)
-                {
-                    if (_checked)
+                menu.OnItemSelect += (_onMenu, _item, _index) =>
                     {
-                        _item.Text = $"{config.Locales.FastValeCheckBoxName} +{config.FastValePrice} $";
-                    }
-                    else
-                    {
-                        _item.Text = config.Locales.FastValeCheckBoxName;
-                    }
-                }
+                        if (config.FastValeService && box.Checked)
+                        {
+                            price = config.ValePrice;
+                            price += config.FastValePrice;
+                            if (!ControlMoney(config.PaymentMethod, price))
+                            {
+                                ShowNoti(config.Locales.NotEnoughMoney);
+                                return;
+                            }
+                            FastVale(_item.ItemData);
+                        }
+                        else
+                        {
+                            if (!ControlMoney(config.PaymentMethod, price))
+                            {
+                                ShowNoti(config.Locales.NotEnoughMoney);
+                                return;
+                            }
+                            price = config.FastValePrice;
+                            Vale(_item.ItemData);
+                        }
+                    };
             };
 
             MenuController.MenuToggleKey = (Control)config.MenuToggleKey;
@@ -179,16 +188,16 @@ namespace Client
             var pos = Game.PlayerPed.Position;
             if (GetDistanceBetweenCoords(pos.X, pos.Y, pos.Z, driver.Position.X, driver.Position.Y, driver.Position.Z, false) > 150f)
             {
-                ESX.ShowNotification(config.Locales.WhileTransferFailing);
+                ShowNoti(config.Locales.WhileTransferFailing);
                 Abort();
             }
 
             if (GetDistanceBetweenCoords(pos.X, pos.Y, pos.Z, driver.Position.X, driver.Position.Y, driver.Position.Z, false) < 2f)
             {
                 //driver.Task.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
-                ESX.ShowNotification(config.Locales.ComplateText);
-                TriggerServerEvent("v_Vale:Pay", price);
-                ESX.ShowNotification(price + "$ " + config.Locales.ValePaidedText);
+                ShowNoti(config.Locales.ComplateText);
+                TriggerServerEvent("v_Vale:Pay", config.PaymentMethod, price);
+                ShowNoti(price + "$ " + config.Locales.ValePaidedText);
                 Complate();
             }
         }
@@ -228,7 +237,7 @@ namespace Client
         {
             if (eventStart)
             {
-                ESX.ShowNotification(config.Locales.ValeAldreadyUsingError);
+                ShowNoti(config.Locales.ValeAldreadyUsingError);
                 return;
             }
             var pos = Game.PlayerPed.Position;
@@ -245,9 +254,10 @@ namespace Client
                 EndTextCommandSetBlipName(blip);
             }));
             TriggerServerEvent("esx_advancedgarage:setVehicleState", v.vehicle.plate, false);
-            ESX.ShowNotification(config.Locales.ComplateText);
-            TriggerServerEvent("v_Vale:Pay", price);
-            ESX.ShowNotification(price + "$ " + config.Locales.ValePaidedText);
+            ShowNoti(config.Locales.ComplateText);
+            TriggerServerEvent("v_Vale:Pay", config.PaymentMethod, price);
+            ShowNoti(price + "$ " + config.Locales.ValePaidedText);
+            menu.CloseMenu();
             eventStart = true;
             fastVale = true;
         }
@@ -255,7 +265,7 @@ namespace Client
         {
             if (eventStart)
             {
-                ESX.ShowNotification(config.Locales.ValeAldreadyUsingError);
+                ShowNoti(config.Locales.ValeAldreadyUsingError);
                 return;
             }
 
@@ -295,14 +305,33 @@ namespace Client
 
             if (GetDistanceBetweenCoords(pos.X, pos.Y, pos.Z, driver.Position.X, driver.Position.Y, driver.Position.Z, false) > 150f)
             {
-                ESX.ShowNotification(config.Locales.ValeCannotUsingThisPos);
+                ShowNoti(config.Locales.ValeCannotUsingThisPos);
                 Abort();
                 return;
             }
-            ESX.ShowNotification(config.Locales.ValeOnTheWay);
+            ShowNoti(config.Locales.ValeOnTheWay);
             //networkCar = GetVehiclePedIsIn(driver.Handle, false);
             eventStart = true;
         }
 
+        private bool ControlMoney(string type, int amount)
+        {
+            try
+            {
+                string accountData = JsonConvert.SerializeObject(ESX.GetPlayerData());
+                var account = JsonConvert.DeserializeObject<AccountModel>(accountData);
+                return account.accounts.Where(x => x.name == type && x.money >= amount).Any();
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+        private void ShowNoti(string text)
+        {
+            Screen.ShowNotification(text);
+            //ESX.ShowNotification(text);
+        }
     }
 }

@@ -21,6 +21,7 @@ namespace Client
         public string ValePaidedText { get; set; }
         public string FastValeCheckBoxName { get; set; }
         public string FastValeCheckBoxDescName { get; set; }
+        public string NotEnoughMoney { get; set; }
     }
 
     public class ConfigModel
@@ -29,6 +30,7 @@ namespace Client
         public int FastValePrice { get; set; }
         public int MenuToggleKey { get; set; }
         public bool FastValeService { get; set; }
+        public string PaymentMethod { get; set; }
         public Locales Locales { get; set; }
     }
 }

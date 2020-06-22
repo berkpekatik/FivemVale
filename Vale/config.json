@@ -1,7 +1,9 @@
 {
   "ValePrice": 5000,
   "FastValePrice": 5000,
-  "MenuToggleKey": 166,
+  "MenuToggleKey": 246,
+  "PaymentMethod": "bank",
+  "FastValeService": true,
   "Locales": {
     "MenuTitle": "Vale Hizmeti",
     "MenuSubTitle": "Sana özel hizmet için hazýrýz",
@@ -15,6 +17,7 @@
     "ValeOnTheWay": "Aracýnýz Yolda!",
     "ValePaidedText": "Vale Ücreti Alýndý!",
     "FastValeCheckBoxName": "Hýzlý Vale",
-    "FastValeCheckBoxDescName": "Bu Seçenek Araçlarý size daha hýzlý ulaþtýrýr."
+    "FastValeCheckBoxDescName": "Bu Seçenek Araçlarý size daha hýzlý ulaþtýrýr.",
+    "NotEnoughMoney": "Paran yetersiz!"
   }
 }

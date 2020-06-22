@@ -1,6 +1,7 @@
 ﻿using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Debug = CitizenFX.Core.Debug;
 
@@ -12,7 +13,7 @@ namespace Server
         public Main()
         {
 
-            EventHandlers["v_Vale:Pay"] += new Action<Player, int>(PayMoney);
+            EventHandlers["v_Vale:Pay"] += new Action<Player, string, int>(PayMoney);
             Tick += OnTick;
             Debug.WriteLine("#####################################");
             Debug.WriteLine("#");
@@ -28,12 +29,12 @@ namespace Server
             Debug.WriteLine("#");
             Debug.WriteLine("#####################################");
         }
-        private void PayMoney([FromSource] Player source, int amount)
+        private void PayMoney([FromSource] Player source, string type, int amount)
         {
             try
             {
                 var xPlayer = ESX.GetPlayerFromId(source.Handle);
-                xPlayer.removeMoney(amount);
+                xPlayer.removeAccountMoney(type, amount);
             }
             catch
             {
