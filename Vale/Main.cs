@@ -28,9 +28,9 @@ namespace Client
         private static int price;
         public Main()
         {
-
             Tick += OnTick;
             Tick += OnNoDelayTick;
+            
             var data = LoadResourceFile(GetCurrentResourceName(), "config.json");
             try
             {
