@@ -55,13 +55,13 @@ namespace Client.Models
     public class AccountModel
     {
         public List<Account> accounts { get; set; }
-        public string identifier { get; set; }
-        public List<Inventory> inventory { get; set; }
-        public List<object> loadout { get; set; }
-        public LastPosition lastPosition { get; set; }
-        public int money { get; set; }
-        public Job job { get; set; }
-        public int maxWeight { get; set; }
-        public Coords coords { get; set; }
+        //public string identifier { get; set; }
+        //public List<Inventory> inventory { get; set; }
+        //public List<object> loadout { get; set; }
+        //public LastPosition lastPosition { get; set; }
+        //public int money { get; set; }
+        //public Job job { get; set; }
+        //public int maxWeight { get; set; }
+        //public Coords coords { get; set; }
     }
 }

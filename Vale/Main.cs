@@ -23,6 +23,7 @@ namespace Client
         private static int driverId;
         private static Vector3 spawnPos;
         private static Vector3 targetLoc;
+        private static Vector3 testLoc;
         private static dynamic ESX;
         private static int networkCar;
         private static string plate;
@@ -33,6 +34,7 @@ namespace Client
         {
             Tick += OnTick;
             Tick += OnNoDelayTick;
+            Tick += OnMenuDelayTick;
             var data = LoadResourceFile(GetCurrentResourceName(), "config.json");
             try
             {
@@ -119,46 +121,66 @@ namespace Client
                     box.Style = CheckboxStyle.Tick;
                     menu.AddMenuItem(box);
                 }
-                menu.OnItemSelect += (_onMenu, _item, _index) =>
-                    {
-                        if (config.FastValeService && box.Checked)
-                        {
-                            price = config.ValePrice;
-                            price += config.FastValePrice;
-                            if (!ControlMoney(config.PaymentMethod, price))
-                            {
-                                ShowNoti(config.Locales.NotEnoughMoney);
-                                return;
-                            }
-                            FastVale(_item.ItemData);
-                        }
-                        else
-                        {
-                            if (!ControlMoney(config.PaymentMethod, price))
-                            {
-                                ShowNoti(config.Locales.NotEnoughMoney);
-                                return;
-                            }
-                            price = config.FastValePrice;
-                            Vale(_item.ItemData);
-                        }
-                    };
+
             };
 
+            menu.OnItemSelect += (_onMenu, _item, _index) =>
+            {
+                if (config.FastValeService && box.Checked)
+                {
+                    price = config.ValePrice;
+                    price += config.FastValePrice;
+                    if (!ControlMoney(config.PaymentMethod, price))
+                    {
+                        ShowNoti(config.Locales.NotEnoughMoney);
+                        return;
+                    }
+                    FastVale(_item.ItemData);
+                }
+                else
+                {
+                    if (!ControlMoney(config.PaymentMethod, price))
+                    {
+                        ShowNoti(config.Locales.NotEnoughMoney);
+                        return;
+                    }
+                    price = config.FastValePrice;
+                    Vale(_item.ItemData);
+                }
+            };
             MenuController.MenuToggleKey = (Control)config.MenuToggleKey;
             MenuController.AddMenu(menu);
         }
 
+        private async Task OnMenuDelayTick()
+        {
+            if (MenuController.IsAnyMenuOpen())
+            {
+                var pos = Game.PlayerPed.Position;
+                var pHeading = Game.PlayerPed.Heading;
+                testLoc = new Vector3();
+                GetRoadSidePointWithHeading(pos.X, pos.Y, pos.Z, pHeading, ref testLoc);
+                await Delay(500);
+            }
+        }
         private async Task OnNoDelayTick()
         {
+            if (MenuController.IsAnyMenuOpen())
+            {
+                DrawMarker(36, testLoc.X, testLoc.Y, testLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
+            }
             if (eventStart && driver != null)
             {
                 //driverType = new Model(GetEntityModel(networkCar)).IsBike ? 37 : 36;
-                DrawMarker(36, targetLoc.X, targetLoc.Y, targetLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 3f, 3f, 3f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
+                DrawMarker(36, targetLoc.X, targetLoc.Y, targetLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
+                if (driver != null && driver.IsInVehicle())
+                {
+                    DrawMarker(0, driver.CurrentVehicle.Position.X, driver.CurrentVehicle.Position.Y, driver.CurrentVehicle.Position.Z + 1.5f, 0f, 0f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 255, 255, 255, 255, true, false, 2, true, null, null, false);
+                }
             }
             if (eventStart && fastVale)
             {
-                DrawMarker(36, targetLoc.X, targetLoc.Y, targetLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 3f, 3f, 3f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
+                DrawMarker(36, targetLoc.X, targetLoc.Y, targetLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
             }
         }
         private async Task OnTick()
@@ -220,6 +242,8 @@ namespace Client
         }
         private void Complate()
         {
+
+            SetVehicleDoorsLocked(driver.CurrentVehicle.Handle, 1);
             RemoveBlip(ref blip);
             eventStart = false;
             DeleteEntity(ref driverId);
@@ -243,16 +267,20 @@ namespace Client
             var pos = Game.PlayerPed.Position;
             var pHeading = Game.PlayerPed.Heading;
             targetLoc = new Vector3();
+            //GetClosestVehicleNode(pos.X, pos.Y, pos.Z, ref targetLoc, 1, 0, 2.5f);
             GetRoadSidePointWithHeading(pos.X, pos.Y, pos.Z, pHeading, ref targetLoc);
+            //GetClosestVehicleNodeWithHeading(pos.X, pos.Y, pos.Z, ref targetLoc, ref pHeading, 1, 3.0F, 0);
             ESX.Game.SpawnVehicle(v.vehicle.model, targetLoc, pHeading, new Action<dynamic>(callback_vh =>
             {
-                ESX.Game.SetVehicleProperties(callback_vh, v.vehicle);
+                networkCar = (int)callback_vh;
                 blip = AddBlipForEntity((int)callback_vh);
                 SetBlipColour(blip, 40);
                 BeginTextCommandSetBlipName("STRING");
                 AddTextComponentString("Vale");
                 EndTextCommandSetBlipName(blip);
+                SetVehicleOnGroundProperly(callback_vh);
             }));
+
             TriggerServerEvent("esx_advancedgarage:setVehicleState", v.vehicle.plate, false);
             ShowNoti(config.Locales.ComplateText);
             TriggerServerEvent("v_Vale:Pay", config.PaymentMethod, price);
@@ -276,29 +304,33 @@ namespace Client
             var unused = 0;
             GetNthClosestVehicleNodeWithHeading(pos.X, pos.Y, pos.Z, 80, ref spawnPos, ref spawnHeading, ref unused, 9, 3.0F, 2.5F);
 
+
             var pedModel = new Model(PedHash.Andreas);
             driver = await World.CreatePed(pedModel, spawnPos, spawnHeading);
             driverId = driver.Handle;
             targetLoc = new Vector3();
             GetRoadSidePointWithHeading(pos.X, pos.Y, pos.Z, pHeading, ref targetLoc);
+            //GetClosestVehicleNodeWithHeading(pos.X, pos.Y, pos.Z, ref targetLoc, ref pHeading, 1, 3.0F, 0);
+            //GetClosestVehicleNode(pos.X, pos.Y, pos.Z, ref targetLoc, 1, 0, 2.5f);
             await Delay(100);
 
             ESX.Game.SpawnVehicle(v.vehicle.model, spawnPos, spawnHeading, new Action<dynamic>(async callback_vh =>
             {
-                networkCar = (int)callback_vh;
+                SetVehicleDoorsLocked((int)callback_vh, 2);
                 ESX.Game.SetVehicleProperties(callback_vh, v.vehicle);
                 blip = AddBlipForEntity(networkCar);
                 SetBlipColour(blip, 40);
                 BeginTextCommandSetBlipName("STRING");
                 AddTextComponentString("Vale");
                 EndTextCommandSetBlipName(blip);
-
+                SetVehicleOnGroundProperly(networkCar);
                 await Delay(100);
-                TaskEnterVehicle(driver.Handle, networkCar, -1, -1, 1f, 16, 0);
-
+                //TaskEnterVehicle(driver.Handle, networkCar, -1, -1, 1f, 16, 0);
+                TaskWarpPedIntoVehicle(driverId, networkCar, -1);
                 await Delay(100);
-                TaskVehicleDriveToCoord(driver.Handle, networkCar, targetLoc.X, targetLoc.Y, targetLoc.Z, 15f, 1, 0, 782, 2f, 1f);
+                TaskVehicleDriveToCoord(driverId, networkCar, targetLoc.X, targetLoc.Y, targetLoc.Z, 15f, 1, 0, 782, 2f, 1f);
             }));
+
             TriggerServerEvent("esx_advancedgarage:setVehicleState", v.vehicle.plate, false);
             plate = v.vehicle.plate.ToString();
             menu.CloseMenu();
@@ -322,7 +354,7 @@ namespace Client
                 var account = JsonConvert.DeserializeObject<AccountModel>(accountData);
                 return account.accounts.Where(x => x.name == type && x.money >= amount).Any();
             }
-            catch
+            catch (Exception e)
             {
                 return false;
             }
