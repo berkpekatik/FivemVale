@@ -28,6 +28,9 @@ namespace Client
         public int ValePrice { get; set; }
         public int FastValePrice { get; set; }
         public int MenuToggleKey { get; set; }
+        public bool FastValeService { get; set; }
+        public bool UpdateService { get; set; }
+        public bool AutoUpdateService { get; set; }
         public Locales Locales { get; set; }
     }
 }

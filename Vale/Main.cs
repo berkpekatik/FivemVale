@@ -112,9 +112,13 @@ namespace Client
 
                 }));
 
-                box = new MenuCheckboxItem(config.Locales.FastValeCheckBoxName, config.Locales.FastValeCheckBoxDescName, false);
-                box.Style = CheckboxStyle.Tick;
-                menu.AddMenuItem(box);
+                if (config.FastValeService)
+                {
+                    box = new MenuCheckboxItem(config.Locales.FastValeCheckBoxName, config.Locales.FastValeCheckBoxDescName, false);
+                    box.Style = CheckboxStyle.Tick;
+                    menu.AddMenuItem(box);
+                }
+
             };
 
             menu.OnCheckboxChange += (_menu, _item, _index, _checked) =>
