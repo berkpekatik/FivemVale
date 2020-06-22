@@ -2,9 +2,6 @@
   "ValePrice": 5000,
   "FastValePrice": 5000,
   "MenuToggleKey": 166,
-  "FastValeService": true,
-  "UpdateService": true, //Update controller
-  "AutoUpdateService": true, //this bool downloading lastest version of the plugin but needs to active updateService
   "Locales": {
     "MenuTitle": "Vale Hizmeti",
     "MenuSubTitle": "Sana özel hizmet için hazýrýz",
