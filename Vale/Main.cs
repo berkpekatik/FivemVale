@@ -30,6 +30,7 @@ namespace Client
         private static ConfigModel config = new ConfigModel();
         private static MenuCheckboxItem box;
         private static int price;
+        private static int carType;
         public Main()
         {
             Tick += OnTick;
@@ -68,7 +69,6 @@ namespace Client
                     }
                 }
             };
-
             menu.OnMenuOpen += (_menu) =>
             {
                 _menu.ClearMenuItems();
@@ -163,24 +163,43 @@ namespace Client
                 await Delay(500);
             }
         }
+        public static async Task<bool> LoadModel(uint model)
+        {
+            if (!IsModelInCdimage(model))
+            {
+                Debug.WriteLine($"Invalid model {model}");
+                return false;
+            }
+            RequestModel(model);
+            while (!HasModelLoaded(model))
+            {
+                Debug.WriteLine($"Waiting for model {model}");
+                await Delay(100);
+            }
+            return true;
+        }
         private async Task OnNoDelayTick()
         {
             if (MenuController.IsAnyMenuOpen())
             {
-                DrawMarker(36, testLoc.X, testLoc.Y, testLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
+                int type = 36;
+                if (menu.GetCurrentMenuItem().LeftIcon == Icon.BIKE)
+                {
+                    type = 37;
+                }
+                DrawMarker(type, testLoc.X, testLoc.Y, testLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
             }
             if (eventStart && driver != null)
             {
-                //driverType = new Model(GetEntityModel(networkCar)).IsBike ? 37 : 36;
-                DrawMarker(36, targetLoc.X, targetLoc.Y, targetLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
+                DrawMarker(carType, targetLoc.X, targetLoc.Y, targetLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
                 if (driver != null && driver.IsInVehicle())
                 {
-                    DrawMarker(0, driver.CurrentVehicle.Position.X, driver.CurrentVehicle.Position.Y, driver.CurrentVehicle.Position.Z + 1.5f, 0f, 0f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 255, 255, 255, 255, true, false, 2, true, null, null, false);
+                    DrawMarker(0, driver.CurrentVehicle.Position.X, driver.CurrentVehicle.Position.Y, driver.CurrentVehicle.Position.Z + 1.9f, 0f, 0f, 0f, 0f, 0f, 0f, 1f, 1f, 1f, 255, 255, 255, 255, true, false, 2, true, null, null, false);
                 }
             }
             if (eventStart && fastVale)
             {
-                DrawMarker(36, targetLoc.X, targetLoc.Y, targetLoc.Z + 1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
+                DrawMarker(carType, targetLoc.X, targetLoc.Y, targetLoc.Z + 2.1f, 0f, 0f, 0f, 0f, 0f, 0f, 2f, 2f, 2f, 255, 255, 255, 255, false, false, 2, true, null, null, false);
             }
         }
         private async Task OnTick()
@@ -208,12 +227,21 @@ namespace Client
         private void Status()
         {
             var pos = Game.PlayerPed.Position;
+            
+            if (networkCar != 0 && IsEntityDead(networkCar))
+            {
+                Abort();
+                ShowNoti(config.Locales.CarBrokenError);
+                return;
+            }
+
             if (GetDistanceBetweenCoords(pos.X, pos.Y, pos.Z, driver.Position.X, driver.Position.Y, driver.Position.Z, false) > 150f)
             {
                 ShowNoti(config.Locales.WhileTransferFailing);
                 Abort();
             }
 
+            
             if (GetDistanceBetweenCoords(pos.X, pos.Y, pos.Z, driver.Position.X, driver.Position.Y, driver.Position.Z, false) < 2f)
             {
                 //driver.Task.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
@@ -225,6 +253,13 @@ namespace Client
         }
         private void FastStatus()
         {
+            if (networkCar != 0 && IsEntityDead(networkCar))
+            {
+                TriggerServerEvent("v_Vale:Give", config.PaymentMethod, price);
+                Abort();
+                HalfAbort();
+                ShowNoti(config.Locales.CarBrokenError);
+            }
             if (Game.PlayerPed.IsInVehicle())
             {
                 HalfAbort();
@@ -237,17 +272,18 @@ namespace Client
             DeleteEntity(ref networkCar);
             DeleteEntity(ref driverId);
             driver = null;
+            networkCar = 0;
             TriggerServerEvent("esx_advancedgarage:setVehicleState", plate, true);
             return;
         }
         private void Complate()
         {
-
-            SetVehicleDoorsLocked(driver.CurrentVehicle.Handle, 1);
+            SetVehicleDoorsLocked(networkCar, 1);
             RemoveBlip(ref blip);
             eventStart = false;
             DeleteEntity(ref driverId);
             driver = null;
+            networkCar = 0;
             return;
         }
         private void HalfAbort()
@@ -255,9 +291,10 @@ namespace Client
             RemoveBlip(ref blip);
             eventStart = false;
             fastVale = false;
+            networkCar = 0;
             return;
         }
-        private void FastVale(dynamic v)
+        private async void FastVale(dynamic v)
         {
             if (eventStart)
             {
@@ -267,19 +304,22 @@ namespace Client
             var pos = Game.PlayerPed.Position;
             var pHeading = Game.PlayerPed.Heading;
             targetLoc = new Vector3();
-            //GetClosestVehicleNode(pos.X, pos.Y, pos.Z, ref targetLoc, 1, 0, 2.5f);
             GetRoadSidePointWithHeading(pos.X, pos.Y, pos.Z, pHeading, ref targetLoc);
-            //GetClosestVehicleNodeWithHeading(pos.X, pos.Y, pos.Z, ref targetLoc, ref pHeading, 1, 3.0F, 0);
-            ESX.Game.SpawnVehicle(v.vehicle.model, targetLoc, pHeading, new Action<dynamic>(callback_vh =>
-            {
-                networkCar = (int)callback_vh;
-                blip = AddBlipForEntity((int)callback_vh);
-                SetBlipColour(blip, 40);
-                BeginTextCommandSetBlipName("STRING");
-                AddTextComponentString("Vale");
-                EndTextCommandSetBlipName(blip);
-                SetVehicleOnGroundProperly(callback_vh);
-            }));
+
+            var x = new Model((int)v.vehicle.model);
+            await LoadModel((uint)x.GetHashCode());
+            var veh = await World.CreateVehicle(x, targetLoc);
+            carType = x.IsBike ? 37 : 36;
+            networkCar = veh.Handle;
+
+            blip = AddBlipForEntity(networkCar);
+            ESX.Game.SetVehicleProperties(networkCar, v.vehicle);
+            SetBlipColour(blip, 40);
+            BeginTextCommandSetBlipName("STRING");
+            AddTextComponentString("Vale");
+            EndTextCommandSetBlipName(blip);
+            SetVehicleOnGroundProperly(networkCar);
+            SetPlayersLastVehicle(networkCar);
 
             TriggerServerEvent("esx_advancedgarage:setVehicleState", v.vehicle.plate, false);
             ShowNoti(config.Locales.ComplateText);
@@ -310,26 +350,27 @@ namespace Client
             driverId = driver.Handle;
             targetLoc = new Vector3();
             GetRoadSidePointWithHeading(pos.X, pos.Y, pos.Z, pHeading, ref targetLoc);
-            //GetClosestVehicleNodeWithHeading(pos.X, pos.Y, pos.Z, ref targetLoc, ref pHeading, 1, 3.0F, 0);
-            //GetClosestVehicleNode(pos.X, pos.Y, pos.Z, ref targetLoc, 1, 0, 2.5f);
             await Delay(100);
 
-            ESX.Game.SpawnVehicle(v.vehicle.model, spawnPos, spawnHeading, new Action<dynamic>(async callback_vh =>
-            {
-                SetVehicleDoorsLocked((int)callback_vh, 2);
-                ESX.Game.SetVehicleProperties(callback_vh, v.vehicle);
-                blip = AddBlipForEntity(networkCar);
-                SetBlipColour(blip, 40);
-                BeginTextCommandSetBlipName("STRING");
-                AddTextComponentString("Vale");
-                EndTextCommandSetBlipName(blip);
-                SetVehicleOnGroundProperly(networkCar);
-                await Delay(100);
-                //TaskEnterVehicle(driver.Handle, networkCar, -1, -1, 1f, 16, 0);
-                TaskWarpPedIntoVehicle(driverId, networkCar, -1);
-                await Delay(100);
-                TaskVehicleDriveToCoord(driverId, networkCar, targetLoc.X, targetLoc.Y, targetLoc.Z, 15f, 1, 0, 782, 2f, 1f);
-            }));
+            var x = new Model((int)v.vehicle.model);
+            await LoadModel((uint)x.GetHashCode());
+            var veh = await World.CreateVehicle(x, spawnPos);
+            carType = x.IsBike ? 37 : 36;
+            networkCar = veh.Handle;
+
+            ESX.Game.SetVehicleProperties(networkCar, v.vehicle);
+            SetVehicleDoorsLocked(networkCar, 2);
+            blip = AddBlipForEntity(networkCar);
+            SetBlipColour(blip, 40);
+            BeginTextCommandSetBlipName("STRING");
+            AddTextComponentString("Vale");
+            EndTextCommandSetBlipName(blip);
+            SetVehicleOnGroundProperly(networkCar);
+
+            await Delay(100);
+            TaskWarpPedIntoVehicle(driverId, networkCar, -1);
+            await Delay(100);
+            TaskVehicleDriveToCoord(driverId, networkCar, targetLoc.X, targetLoc.Y, targetLoc.Z, 15f, 1, 0, 782, 2f, 1f);
 
             TriggerServerEvent("esx_advancedgarage:setVehicleState", v.vehicle.plate, false);
             plate = v.vehicle.plate.ToString();
@@ -342,7 +383,6 @@ namespace Client
                 return;
             }
             ShowNoti(config.Locales.ValeOnTheWay);
-            //networkCar = GetVehiclePedIsIn(driver.Handle, false);
             eventStart = true;
         }
 

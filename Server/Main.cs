@@ -14,6 +14,7 @@ namespace Server
         {
 
             EventHandlers["v_Vale:Pay"] += new Action<Player, string, int>(PayMoney);
+            EventHandlers["v_Vale:Give"] += new Action<Player, string, int>(GiveMoney);
             Tick += OnTick;
             Debug.WriteLine("#####################################");
             Debug.WriteLine("#");
@@ -35,6 +36,18 @@ namespace Server
             {
                 var xPlayer = ESX.GetPlayerFromId(source.Handle);
                 xPlayer.removeAccountMoney(type, amount);
+            }
+            catch
+            {
+                Debug.WriteLine("This server cannot support ESX");
+            }
+        }
+        private void GiveMoney([FromSource] Player source, string type, int amount)
+        {
+            try
+            {
+                var xPlayer = ESX.GetPlayerFromId(source.Handle);
+                xPlayer.addAccountMoney(type, amount);
             }
             catch
             {
