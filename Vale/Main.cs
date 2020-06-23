@@ -390,6 +390,13 @@ namespace Client
                 return;
             }
             ShowNoti(config.Locales.ValeOnTheWay);
+
+            while (!IsPedInVehicle(driverId,networkCar,false))
+            {
+                TaskWarpPedIntoVehicle(driverId, networkCar, -1);
+                await Delay(50);
+            }
+
             eventStart = true;
         }
 
