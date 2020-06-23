@@ -235,6 +235,13 @@ namespace Client
                 return;
             }
 
+            if (driverId != 0 && IsEntityDead(driverId))
+            {
+                Abort();
+                ShowNoti(config.Locales.CarBrokenError);
+                return;
+            }
+
             if (GetDistanceBetweenCoords(pos.X, pos.Y, pos.Z, driver.Position.X, driver.Position.Y, driver.Position.Z, false) > 150f)
             {
                 ShowNoti(config.Locales.WhileTransferFailing);
