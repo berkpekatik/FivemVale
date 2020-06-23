@@ -19,6 +19,8 @@
     "FastValeCheckBoxName": "Hýzlý Vale",
     "FastValeCheckBoxDescName": "Bu Seçenek Araçlarý size daha hýzlý ulaþtýrýr.",
     "NotEnoughMoney": "Paran yetersiz!",
-    "CarBrokenError": "Aracýn Hasar Gördüðü Ýçin Geri Ödeme Yapýldý!"
+    "CarBrokenError": "Aracýn Hasar Gördüðü Ýçin Geri Ödeme Yapýldý!",
+    "AbortJobTitle": "Vazgeç",
+    "AbortJob": "Mevcut vale hizmetini iptal olur"
   }
 }

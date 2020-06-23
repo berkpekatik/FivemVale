@@ -122,12 +122,41 @@ namespace Client
                     menu.AddMenuItem(box);
                 }
 
+                if (eventStart || fastVale)
+                {
+                    var menuItem = new MenuItem(config.Locales.AbortJobTitle)
+                    {
+                        Description = config.Locales.AbortJob,
+                        LeftIcon = Icon.WARNING,
+                        ItemData = true,
+                        Enabled = true,
+                    };
+                    menu.AddMenuItem(menuItem);
+                }
+
             };
 
             menu.OnItemSelect += (_onMenu, _item, _index) =>
             {
+                try
+                {
+                    if ((bool)_item.ItemData)
+                    {
+                        if (fastVale)
+                        {
+                            TriggerServerEvent("v_Vale:Give", config.PaymentMethod, price);
+                        }
+                        Abort();
+                    }
+                }
+                catch
+                {
+                }
+
                 if (config.FastValeService && box.Checked)
                 {
+                    
+
                     price = config.ValePrice;
                     price += config.FastValePrice;
                     if (!ControlMoney(config.PaymentMethod, price))
@@ -167,13 +196,13 @@ namespace Client
         {
             if (!IsModelInCdimage(model))
             {
-                Debug.WriteLine($"Invalid model {model}");
+                //Debug.WriteLine($"Invalid model {model}");
                 return false;
             }
             RequestModel(model);
             while (!HasModelLoaded(model))
             {
-                Debug.WriteLine($"Waiting for model {model}");
+                //Debug.WriteLine($"Waiting for model {model}");
                 await Delay(100);
             }
             return true;
@@ -227,15 +256,20 @@ namespace Client
         private void Status()
         {
             var pos = Game.PlayerPed.Position;
-            
+
             if (networkCar != 0 && IsEntityDead(networkCar))
             {
                 Abort();
                 ShowNoti(config.Locales.CarBrokenError);
                 return;
             }
-
-            if (driverId != 0 && IsEntityDead(driverId))
+            else if (driverId != 0 && IsEntityDead(driverId))
+            {
+                Abort();
+                ShowNoti(config.Locales.CarBrokenError);
+                return;
+            }
+            else if (driverId != 0 && IsPedRagdoll(driverId))
             {
                 Abort();
                 ShowNoti(config.Locales.CarBrokenError);
@@ -248,7 +282,7 @@ namespace Client
                 Abort();
             }
 
-            
+
             if (GetDistanceBetweenCoords(pos.X, pos.Y, pos.Z, driver.Position.X, driver.Position.Y, driver.Position.Z, false) < 2f)
             {
                 //driver.Task.LeaveVehicle(LeaveVehicleFlags.LeaveDoorOpen);
@@ -280,6 +314,7 @@ namespace Client
             DeleteEntity(ref driverId);
             driver = null;
             networkCar = 0;
+            driverId = 0;
             TriggerServerEvent("esx_advancedgarage:setVehicleState", plate, true);
             return;
         }
@@ -291,6 +326,7 @@ namespace Client
             DeleteEntity(ref driverId);
             driver = null;
             networkCar = 0;
+            driverId = 0;
             return;
         }
         private void HalfAbort()
@@ -299,6 +335,7 @@ namespace Client
             eventStart = false;
             fastVale = false;
             networkCar = 0;
+            driverId = 0;
             return;
         }
         private async void FastVale(dynamic v)
@@ -391,7 +428,7 @@ namespace Client
             }
             ShowNoti(config.Locales.ValeOnTheWay);
 
-            while (!IsPedInVehicle(driverId,networkCar,false))
+            while (!IsPedInVehicle(driverId, networkCar, false))
             {
                 TaskWarpPedIntoVehicle(driverId, networkCar, -1);
                 await Delay(50);

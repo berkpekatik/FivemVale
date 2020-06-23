@@ -23,6 +23,8 @@ namespace Client
         public string FastValeCheckBoxDescName { get; set; }
         public string NotEnoughMoney { get; set; }
         public string CarBrokenError { get; set; }
+        public string AbortJob { get; set; }
+        public string AbortJobTitle { get; set; }
     }
 
     public class ConfigModel
