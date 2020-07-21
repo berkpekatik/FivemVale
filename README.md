@@ -49,3 +49,12 @@ and then start the *v_vale* script
 # Required:
 [es_extended](https://github.com/esx-framework/es_extended)
 [esx_advancedgarage](https://github.com/search?q=esx_advancedgarage)
+* Why do i have to use it ESX_ADNVANCEDGARAGE * 
+if you don't want to use, Change the following in the code
+
+```c#
+TriggerServerEvent("esx_advancedgarage:setVehicleState", v.vehicle.plate, false);//370 Line in Vale/Main.cs
+TriggerServerEvent("esx_advancedgarage:setVehicleState", v.vehicle.plate, false); //421 Line in Vale/Main.cs
+TriggerServerEvent("esx_advancedgarage:setVehicleState", plate, true); //319 Line in Vale/Main.cs
+ESX.TriggerServerCallback("esx_advancedgarage:getOwnedCars", new Action<dynamic>(ownedCars => //75 Line in Vale/Main.cs
+```
