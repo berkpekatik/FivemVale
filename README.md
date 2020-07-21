@@ -47,5 +47,5 @@ Change the config file
 and then start the *v_vale* script
 
 # Required:
-es_extended
-esx_advancedgarage
+[es_extended](https://github.com/esx-framework/es_extended)
+[esx_advancedgarage](https://github.com/search?q=esx_advancedgarage)
