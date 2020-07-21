@@ -5,6 +5,7 @@ esx_advancedgarage
 
 Config File
 ```json
+{
   "ValePrice": 5000, //Valet Fee
   "FastValePrice": 5000, //Fast Valet Fee
   "MenuToggleKey": 246, //Menu Key you can search here https://docs.fivem.net/docs/game-references/controls/
