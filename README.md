@@ -12,6 +12,7 @@ Config File (Release version is Turkish)
   "MenuToggleKey": 246,
   "PaymentMethod": "bank",
   "FastValeService": true,
+  "LockVehicle": false,
   "Locales": {
     "MenuTitle": "Valet Service",
     "MenuSubTitle": "We are ready for special service for you",
