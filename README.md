@@ -25,9 +25,9 @@ Config File
     "ValeOnTheWay": "Aracınız Yolda!" //Car on the way !
     "ValePaidedText": "Vale Ücreti Alındı!" // Valet money paid
     "FastValeCheckBoxName": "Hızlı Vale" //Speed Valet
-    "FastValeCheckBoxDescName": "Bu Seçenek Araçları size daha hızlı ulaştırır.",  - These Option Tools deliver it to you faster.
+    "FastValeCheckBoxDescName": "Bu Seçenek Araçları size daha hızlı ulaştırır." // These Option Tools deliver it to you faster.
     "NotEnoughMoney": "Paran yetersiz!" //Not enough money !
-    "CarBrokenError": "Aracın Hasar Gördüğü İçin Geri Ödeme Yapıldı!",  - Reimbursed for Damaged Vehicle!
+    "CarBrokenError": "Aracın Hasar Gördüğü İçin Geri Ödeme Yapıldı!" // Reimbursed for Damaged Vehicle!
     "AbortJobTitle": "Vazgeç" //Give up
     "AbortJob": "Mevcut vale hizmetini iptal olur" //Cancels the current valet service
     "AbortJobError": "Vale Servisi İptal Edildi!" //Valet Service Canceled!
