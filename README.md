@@ -49,7 +49,7 @@ and then start the *v_vale* script
 # Required:
 [es_extended](https://github.com/esx-framework/es_extended)
 [esx_advancedgarage](https://github.com/search?q=esx_advancedgarage)
-* Why do i have to use it ESX_ADNVANCEDGARAGE * 
+* Why do i have to use it ESX_ADNVANCEDGARAGE  
 if you don't want to use, Change the following in the code
 
 ```c#
