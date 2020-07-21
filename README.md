@@ -1,7 +1,5 @@
 # FivemVale
-Required:
-es_extended
-esx_advancedgarage
+
 
 ```diff
 -Valet service is only used for vehicles and motorcycles
@@ -48,3 +46,6 @@ Change the config file
 
 and then start the *v_vale* script
 
+# Required:
+es_extended
+esx_advancedgarage
