@@ -4,7 +4,7 @@
 ```diff
 -Valet service is only used for vehicles and motorcycles
 ```
-Config File
+Config File (Release version is Turkish)
 ```json
 {
   "ValePrice": 5000,
