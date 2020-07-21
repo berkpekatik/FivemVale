@@ -7,12 +7,12 @@
 Config File (Release version is Turkish)
 ```json
 {
-  "ValePrice": 5000,
-  "FastValePrice": 5000,
-  "MenuToggleKey": 246,
-  "PaymentMethod": "bank",
-  "FastValeService": true,
-  "LockVehicle": false,
+  "ValePrice": 5000, /* Valet Price */
+  "FastValePrice": 5000, /* Fast Valet Price */
+  "MenuToggleKey": 246, /* Menu Key Value currently Y */
+  "PaymentMethod": "bank", /* Payment type if you want cash write money */
+  "FastValeService": true, /* Fast Valet Active or Passive true/false */
+  "LockVehicle": false, /* Do you want to lock spawned car */
   "Locales": {
     "MenuTitle": "Valet Service",
     "MenuSubTitle": "We are ready for special service for you",
