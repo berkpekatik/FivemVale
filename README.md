@@ -58,3 +58,6 @@ TriggerServerEvent("esx_advancedgarage:setVehicleState", v.vehicle.plate, false)
 TriggerServerEvent("esx_advancedgarage:setVehicleState", plate, true); //319 Line in Vale/Main.cs
 ESX.TriggerServerCallback("esx_advancedgarage:getOwnedCars", new Action<dynamic>(ownedCars => //75 Line in Vale/Main.cs
 ```
+
+# Problems
+Sometimes Newtonsoft.Json.dll giving error or doesn't work, if you have a problem with Newtonsoft.Json.dll use [vMenu Newtonsoft.Json.dll](https://github.com/tomgrobbe/vMenu) 
