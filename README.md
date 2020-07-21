@@ -39,5 +39,5 @@ Config File
 ```
 
 
-Installation-H1
-[Download]:test.com the latest version from the release section
+# H1 Installation
+[Download](test.com) the latest version from the release section
