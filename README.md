@@ -4,7 +4,7 @@ es_extended
 esx_advancedgarage
 
 ```diff
--Valet service is only used for vehicles and engines
+-Valet service is only used for vehicles and motorcycles
 ```
 Config File
 ```json
