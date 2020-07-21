@@ -39,5 +39,8 @@ Config File
 ```
 
 
-# H1 Installation
-[Download](test.com) the latest version from the release section
+# Installation
+[Download](https://github.com/vnoisy/FivemVale/releases) the latest version from the release section
+Add your resources folder the file you downloaded
+Change the config file
+and then start the v_vale script
