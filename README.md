@@ -4,7 +4,7 @@
 ```diff
 -Valet service is only used for vehicles and motorcycles
 ```
-Config File
+Config File (Do Not Use this File,this is just the explanation)
 ```json
 {
   "ValePrice": 5000, //Valet Fee
@@ -12,7 +12,7 @@ Config File
   "MenuToggleKey": 246, //Menu Key you can search here https://docs.fivem.net/docs/game-references/controls/
   "PaymentMethod": "bank", //if you want cash write your payment type example money, black_money
   "FastValeService": true, //do quick valet service be active?
-  "Locales": { //Please some one translate English LUL
+  "Locales": { 
     "MenuTitle": "Vale Hizmeti" //Valet Service
     "MenuSubTitle": "Sana özel hizmet için hazırız" // We are ready for special service for you
     "NoCarGarage": "Garajda aracınız bulunmamaktadır." //You have no vehicles in the garage
