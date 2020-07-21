@@ -39,6 +39,5 @@ Config File
 ```
 
 
-```html
-<h4>Installation</h4>
-```
+Installation-H1
+[Download]:test.com the latest version from the release section
