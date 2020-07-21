@@ -4,36 +4,35 @@
 ```diff
 -Valet service is only used for vehicles and motorcycles
 ```
-Config File (Do Not Use this File,this is just the explanation)
+Config File
 ```json
 {
-  "ValePrice": 5000, //Valet Fee
-  "FastValePrice": 5000, //Fast Valet Fee
-  "MenuToggleKey": 246, //Menu Key you can search here https://docs.fivem.net/docs/game-references/controls/
-  "PaymentMethod": "bank", //if you want cash write your payment type example money, black_money
-  "FastValeService": true, //do quick valet service be active?
-  "Locales": { 
-    "MenuTitle": "Vale Hizmeti" //Valet Service
-    "MenuSubTitle": "Sana özel hizmet için hazırız" // We are ready for special service for you
-    "NoCarGarage": "Garajda aracınız bulunmamaktadır." //You have no vehicles in the garage
-    "StoredTextNotReady": /*PLATENUMBER*/ "Plakalı Aracınız Çekilmişler Garajında!" //Your Plate Vehicle in the State Garage
-    "StoredTextReady": /*PLATENUMBER*/ "Plakalı Aracınız Garajda Hazır!" //Your Plate Vehicle is Ready in the Garage
-    "WhileTransferFailing": "Konum bilgisi dogrulanamadi." //Location information is not verified.
-    "ComplateText": "Aracınız Teslim Edildi." //Your vehicle has been delivered
-    "ValeAldreadyUsingError": "Aktif bir Vale hizmetin bulunmakta." //You have an active valet service
-    "ValeCannotUsingThisPos": "Malasef bulundugunuz bölgeye araç teslimat servisi yok." //Sorry, no car service to your area
-    "ValeOnTheWay": "Aracınız Yolda!" //Car on the way !
-    "ValePaidedText": "Vale Ücreti Alındı!" // Valet money paid
-    "FastValeCheckBoxName": "Hızlı Vale" //Speed Valet
-    "FastValeCheckBoxDescName": "Bu Seçenek Araçları size daha hızlı ulaştırır." // These Option Tools deliver it to you faster.
-    "NotEnoughMoney": "Paran yetersiz!" //Not enough money !
-    "CarBrokenError": "Aracın Hasar Gördüğü İçin Geri Ödeme Yapıldı!" // Reimbursed for Damaged Vehicle!
-    "AbortJobTitle": "Vazgeç" //Give up
-    "AbortJob": "Mevcut vale hizmetini iptal olur" //Cancels the current valet service
-    "AbortJobError": "Vale Servisi İptal Edildi!" //Valet Service Canceled!
+  "ValePrice": 5000,
+  "FastValePrice": 5000,
+  "MenuToggleKey": 246,
+  "PaymentMethod": "bank",
+  "FastValeService": true,
+  "Locales": {
+    "MenuTitle": "Valet Service",
+    "MenuSubTitle": "We are ready for special service for you",
+    "NoCarGarage": "You have no vehicles in the garage.",
+    "StoredTextNotReady": "Plate Vehicle in the State Garage",
+    "StoredTextReady": "Plate Vehicle is Ready in the Garage",
+    "WhileTransferFailing": "Location information is not verified.",
+    "ComplateText": "Your vehicle has been delivered.",
+    "ValeAldreadyUsingError": "You have an active valet service.",
+    "ValeCannotUsingThisPos": "Sorry, no car service to your area",
+    "ValeOnTheWay": "Car on the way !",
+    "ValePaidedText": "Valet money paid!",
+    "FastValeCheckBoxName": "Fast Valet",
+    "FastValeCheckBoxDescName": "These Option Tools deliver it to you faster.",
+    "NotEnoughMoney": "Not enough money!",
+    "CarBrokenError": "Reimbursed for Damaged Vehicle!",
+    "AbortJobTitle": "Cancel",
+    "AbortJob": "Cancels the current valet service",
+    "AbortJobError": "Valet Service Canceled!"
   }
 }
-
 ```
 
 
