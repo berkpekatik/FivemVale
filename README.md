@@ -9,7 +9,7 @@ Config File
   "ValePrice": 5000, //Valet Fee
   "FastValePrice": 5000, //Fast Valet Fee
   "MenuToggleKey": 246, //Menu Key you can search here https://docs.fivem.net/docs/game-references/controls/
-  "PaymentMethod": "bank", //if you want cash write your payment type example: money, black_money
+  "PaymentMethod": "bank", //if you want cash write your payment type example money, black_money
   "FastValeService": true, //do quick valet service be active?
   "Locales": { //Please some one translate English LUL
     "MenuTitle": "Vale Hizmeti",
