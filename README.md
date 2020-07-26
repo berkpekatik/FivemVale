@@ -61,3 +61,6 @@ ESX.TriggerServerCallback("esx_advancedgarage:getOwnedCars", new Action<dynamic>
 
 # Problems
 Sometimes Newtonsoft.Json.dll giving error or doesn't work, if you have a problem with Newtonsoft.Json.dll use [vMenu Newtonsoft.Json.dll](https://github.com/tomgrobbe/vMenu) 
+
+Sometimes the doors of the vehicle in the valet service do not open
+
