@@ -36,6 +36,9 @@ Config File (Release version is Turkish)
 }
 ```
 
+# Videos
+[Valet Service #1](https://streamable.com/77c65a)
+[Fast Valet Service #1](https://streamable.com/vxsdvs)
 
 # Installation
 [Download](https://github.com/vnoisy/FivemVale/releases) the latest version from the release section
